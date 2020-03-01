@@ -2,10 +2,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\USJT.Service\USJT.Service.csproj" />
+    <ProjectReference Include="..\USJT.Models\USJT.Models.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
 </Project>

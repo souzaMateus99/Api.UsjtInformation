@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\USJT.Facade\USJT.Facade.csproj" />
+    <ProjectReference Include="..\USJT.Service\USJT.Service.csproj" />
+    <ProjectReference Include="..\USJT.Models\USJT.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

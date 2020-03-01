@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/USJT.Api/bin/Debug/netcoreapp3.1/USJT.Api.dll",
+            "program": "${workspaceFolder}/content/src/USJT.Api/bin/Debug/netcoreapp3.1/USJT.Api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/USJT.Api",
+            "cwd": "${workspaceFolder}/content/src/USJT.Api",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",

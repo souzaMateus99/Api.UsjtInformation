@@ -1,15 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using USJT.Facade;
+using USJT.Service.Pages;
+using ScrapySharp.Network;
+using USJT.Facade.Interfaces;
+using USJT.Service.Constants;
 using System.Threading.Tasks;
+using USJT.Service.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace USJT.Api
 {
@@ -27,6 +33,19 @@ namespace USJT.Api
         {
             services.AddHealthChecks();
             services.AddControllers();
+
+            services.AddSingleton<ILoginPageService, LoginPageService>();
+            services.AddSingleton<IStudentFacade, StudentFacade>();
+            services.AddSingleton(p => 
+            {
+                var browser = new ScrapingBrowser();
+
+                browser.AllowMetaRedirect = true;
+                browser.KeepAlive = true;
+                browser.Timeout = TimeSpan.FromMinutes(2);
+
+                return browser;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
