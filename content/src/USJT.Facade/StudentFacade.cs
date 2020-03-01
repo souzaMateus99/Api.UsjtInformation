@@ -20,7 +20,6 @@ namespace USJT.Facade
 
             if(logged)
             {
-
             }
 
             return string.Empty;

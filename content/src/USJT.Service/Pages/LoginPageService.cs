@@ -1,11 +1,12 @@
 using System;
-using System.Web;
 using System.Linq;
-using USJT.Models.Structs;
 using ScrapySharp.Html;
+using USJT.Service.Enums;
+using USJT.Models.Structs;
 using ScrapySharp.Network;
 using USJT.Service.Constants;
 using System.Threading.Tasks;
+using USJT.Models.Extensions;
 using USJT.Service.Interfaces;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ namespace USJT.Service.Pages
             await browser.NavigateToPageAsync(uri, HttpVerb.Post, requestParameters, ContentTypes.FORM_URL_ENCONDED);
             page = await browser.NavigateToPageAsync(new Uri(PageContext.MAIN_PAGE_CONTEXT));
             
-            return page.Find("div", By.Class("left")).Any();
+            return page.Find(HtmlTags.Div.GetDescription(), By.Class("left")).Any();
         }
     }
 }
