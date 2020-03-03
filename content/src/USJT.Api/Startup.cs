@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using USJT.Api.Constants;
 
 namespace USJT.Api
 {
@@ -51,7 +52,7 @@ namespace USJT.Api
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks(ApiContext.HEALTH_CONTEXT);
                 endpoints.MapControllers();
             });
         }
