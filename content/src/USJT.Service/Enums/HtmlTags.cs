@@ -5,6 +5,8 @@ namespace USJT.Service.Enums
     public enum HtmlTags
     {
         [Description("div")]
-        Div
+        Div,
+        [Description("form")]
+        Form
     }
 }

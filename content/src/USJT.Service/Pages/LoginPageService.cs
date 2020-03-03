@@ -13,27 +13,26 @@ using System.Collections.Generic;
 namespace USJT.Service.Pages
 {
     public class LoginPageService : PageBase, ILoginPageService
-    {
+    {        
+        private const string MATRICULA_KEY = "matricula";
+        private const string SENHA_KEY = "senha";
+        
         public LoginPageService(ScrapingBrowser browser)
             : base(browser)
         {
-            
+            browser.NavigateToPage(new Uri(PageContext.LOGIN_PAGE_CONTEXT));
         }
 
-        public async Task<bool> LoginAsync(Login login)
+        public async Task<WebPage> LoginAsync(Login login)
         {
-            var uri = new Uri(PageContext.LOGIN_URL_CONTEXT);
-
             var parameters = RequestsParameters.LoginParameters;
-            parameters["matricula"] = login.Matricula;
-            parameters["senha"] = login.Senha;
+            parameters[MATRICULA_KEY] = login.Matricula;
+            parameters[SENHA_KEY] = login.Senha;
             
             var requestParameters = GetParameterString(parameters);
 
-            await browser.NavigateToPageAsync(uri, HttpVerb.Post, requestParameters, ContentTypes.FORM_URL_ENCONDED);
-            page = await browser.NavigateToPageAsync(new Uri(PageContext.MAIN_PAGE_CONTEXT));
-            
-            return page.Find(HtmlTags.Div.GetDescription(), By.Class("left")).Any();
+            await browser.NavigateToPageAsync(new Uri(PageContext.LOGIN_URL_CONTEXT), HttpVerb.Post, requestParameters, ContentTypes.FORM_URL_ENCONDED);
+            return await browser.NavigateToPageAsync(new Uri(PageContext.MAIN_PAGE_CONTEXT));
         }
     }
 }

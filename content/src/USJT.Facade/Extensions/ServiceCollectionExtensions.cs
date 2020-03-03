@@ -11,6 +11,7 @@ namespace USJT.Facade.Extensions
         public static void AddWebCrawlerServices(this IServiceCollection services)
         {
             services.AddSingleton<ILoginPageService, LoginPageService>();
+            services.AddSingleton<ISchedulerPageService, SchedulerPageService>();
             
             services.AddSingleton(p => 
             {
@@ -18,7 +19,7 @@ namespace USJT.Facade.Extensions
 
                 browser.AllowMetaRedirect = true;
                 browser.KeepAlive = true;
-                browser.Timeout = TimeSpan.FromMinutes(2);
+                browser.Timeout = TimeSpan.FromSeconds(30);
 
                 return browser;
             });

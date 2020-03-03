@@ -2,44 +2,52 @@ using System;
 using System.Web;
 using System.Linq;
 using ScrapySharp.Html;
+using USJT.Service.Enums;
 using ScrapySharp.Network;
+using USJT.Models.Extensions;
 using System.Threading.Tasks;
 using USJT.Service.Constants;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using HtmlAgilityPack;
 
 namespace USJT.Service.Pages
 {
     public abstract class PageBase
     {
         internal readonly ScrapingBrowser browser;
-        internal WebPage page;
         
         public PageBase(ScrapingBrowser browser)
         {
             this.browser = browser;
         }
-        
-        public async Task<bool> LogoutAsync()
+
+        public KeyValuePair<string, string> GetSideBarMenuItem(string item, WebPage page)
         {
-            var uri = new Uri(PageContext.LOGOUT_URL_CONTEXT);
-            
-            var page = await browser.NavigateToPageAsync(uri, HttpVerb.Post, "__ajax:1", ContentTypes.FORM_URL_ENCONDED);
-
-            var loginForm = page.Find("form", By.Class("dev-form dev-form-login"));
-
-            return loginForm.Any();
+            return ExpandSideBarMenu(page).FirstOrDefault(m => string.Compare(m.Key, item, true) == 0);
         }
 
-        public string ExpandSideBarMenu()
+        public IDictionary<string, string> ExpandSideBarMenu(WebPage page)
         {
-            var sideBarMenu = page.Find("div", By.Class("nav-side-menu")).First();
+            var sideBarMenu = page.Find(HtmlTags.Div.GetDescription(), By.Class("menu-list")).FirstOrDefault();
 
             if(sideBarMenu is null)
-            {
-                return string.Empty;
+            {               
+                return ImmutableDictionary<string, string>.Empty;
             }
 
-            return sideBarMenu.InnerHtml;
+            var nodesMenu = sideBarMenu.OwnerDocument.DocumentNode.SelectNodes("//ul //a");
+            var dic = new Dictionary<string, string>();
+            
+            foreach(var node in nodesMenu)
+            {
+                var title = node.InnerText;
+                var link = node.Attributes.AttributesWithName("href").FirstOrDefault().Value;
+
+                dic.TryAdd(title, link);
+            }
+
+            return dic;
         }
 
         public string GetParameterString(Dictionary<string, string> parameters)
