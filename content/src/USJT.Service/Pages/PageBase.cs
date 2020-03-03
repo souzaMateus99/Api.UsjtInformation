@@ -15,6 +15,9 @@ namespace USJT.Service.Pages
 {
     public abstract class PageBase
     {
+        private const string SIDE_BAR_MENU_CLASS = "menu-list";
+        private const string MENU_NODE_HREF_ATTRIBUTE = "href";
+        
         internal readonly ScrapingBrowser browser;
         
         public PageBase(ScrapingBrowser browser)
@@ -29,7 +32,7 @@ namespace USJT.Service.Pages
 
         public IDictionary<string, string> ExpandSideBarMenu(WebPage page)
         {
-            var sideBarMenu = page.Find(HtmlTags.Div.GetDescription(), By.Class("menu-list")).FirstOrDefault();
+            var sideBarMenu = page.Find(HtmlTags.Div.GetDescription(), By.Class(SIDE_BAR_MENU_CLASS)).FirstOrDefault();
 
             if(sideBarMenu is null)
             {               
@@ -42,7 +45,7 @@ namespace USJT.Service.Pages
             foreach(var node in nodesMenu)
             {
                 var title = node.InnerText;
-                var link = node.Attributes.AttributesWithName("href").FirstOrDefault().Value;
+                var link = node.Attributes.AttributesWithName(MENU_NODE_HREF_ATTRIBUTE).FirstOrDefault().Value;
 
                 dic.TryAdd(title, link);
             }
