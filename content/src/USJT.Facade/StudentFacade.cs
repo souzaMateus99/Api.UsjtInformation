@@ -23,9 +23,7 @@ namespace USJT.Facade
         }
         
         public async Task<IEnumerable<Subject>> GetClassScheduleAsync(Login login)
-        {
-            var classesSchedule = Enumerable.Empty<Subject>();
-            
+        {            
             var mainPage = await _loginService.LoginAsync(login);
 
             if(mainPage.Content.Contains(login.Matricula))
@@ -36,18 +34,34 @@ namespace USJT.Facade
 
                 var tableRows = scheduleTable.SelectNodes("//tr");
 
-                var classes = tableRows.Select((n, i) => n.SelectNodes($"//td[{i + 1}]"));
+                var tableLines = tableRows.Select((n, i) => n.SelectNodes($"//td[{i + 1}]"));
 
-                var test = classes
+                var classes = tableLines
                     .Where(c => !Regex.IsMatch(c.First().InnerText.Trim(), @"\d{2}:\d{2}"))
                     .Select(c => c.Select(n => new Subject { Title = n.InnerText.Trim() }));
 
-                var test2 = classes
-                    .Where(c => Regex.IsMatch(c.First().InnerText.Trim(), @"\d{2}:\d{2}"))
-                    .Select(c => c.Select(n => new ClassHour { StartHour = n.InnerText.Split('-')[0].Trim(), FinishHour = n.InnerText.Split('-')[1].Trim() }));
+                var hours = tableLines
+                    .FirstOrDefault(c => Regex.IsMatch(c.First().InnerText.Trim(), @"\d{2}:\d{2}"))
+                    .Select(n => n.InnerText.Trim());
+
+                return classes
+                    .SelectMany(c => c.Select((s, i) => 
+                        {
+                            var startHour = hours.ElementAt(i).Split('-').FirstOrDefault().Trim();
+                            var finishHour = hours.ElementAt(i).Split('-').LastOrDefault().Trim();
+                            var clas = Regex.Match(s.Title, @"\([\w\d-]+\)").Value;
+
+                            s.ClassHour = new ClassHour{ StartHour = startHour, FinishHour = finishHour };
+                            
+                            s.Classroom = s.Title.Split(clas).LastOrDefault().Trim();
+                            s.Title = s.Title.Split(clas).FirstOrDefault().Trim();
+
+                            return s;
+                        })
+                    );
             }
 
-            return classesSchedule;
+            return Enumerable.Empty<Subject>();
         }
     }
 }
