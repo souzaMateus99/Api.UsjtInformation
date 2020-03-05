@@ -26,14 +26,14 @@ namespace USJT.Api.Controllers
         {
             var login = new Login { Matricula = matricula, Senha = senha };
 
-            var content = await _studentFacade.GetClassScheduleAsync(login);
+            var classScheduler = await _studentFacade.GetClassScheduleAsync(login);
 
-            if(string.IsNullOrEmpty(content))
+            if(classScheduler is null)
             {
                 return NoContent();
             }
 
-            return Ok(content);
+            return Ok(classScheduler);
         }
     }
 }
